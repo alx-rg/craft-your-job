@@ -1,4 +1,8 @@
 # BoardGameUrh
+
+Check it out here: [BoardGameUrh](https://boardgameurh.herokuapp.com/ )
+This app is hosted on Heroku at: https://boardgameurh.herokuapp.com/
+
 The app is intended to keep track of the boardgames you've played, some notes/comments and image to easily pick out the game. Different users can add boardgames and leave comments on others. This app uses WTForms and holds the info in a simple database. 
 
 ## Steps to run
