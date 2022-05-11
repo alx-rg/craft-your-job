@@ -6,23 +6,17 @@
         <link rel="preconnect" href="https://fonts.gstatic.com">
         <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
     </head>
-    <body>
-        <!-- Add base html here. -->
-        
+    <body>        
         <nav> 
             {% if current_user.is_authenticated %}
             <a href="/"><img class='logo' src="{{ url_for('static', filename='logo.png')}}"></img></a>
             <div class="nav-links">
 
-               
-                <a href="/logout">Log Out</a>                
-                <a href="/new_publisher">New Publisher</a>
-                <a href="/new_boardgame">New Boardgame</a>
+                <a href="/logout" style="color: #ea5572;">Log Out /</a>                
+                <a href="/new_publisher" >New Publisher /</a>
+                <a href="/new_boardgame" style="color: #ea5572;">New Boardgame /</a>
                 <a href="/">All BoardGames</a>
-                    <!-- stuff you only want to show to logged-in users -->
                 {% else %}
-                    <!-- stuff you only want to show to logged-out users -->
-           
                     <h1>
                        <a href="/signup">Sign Up &nbsp</a> 
                     </h1>
@@ -30,7 +24,6 @@
 
                         <a href="/login" style="color: #ea5572;">&nbsp/ &nbsp Log In</a>
                     </h1>
- 
                 {% endif %}
             </div>
         </nav>
