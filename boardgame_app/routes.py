@@ -17,6 +17,14 @@ from boardgame_app import bcrypt
 main = Blueprint("main", __name__)
 auth = Blueprint("auth", __name__)
 
+# source venv/bin/activate
+# which python
+# python3 app.py
+# export FLASK_ENV=development
+# export FLASK_DEBUG=1
+# flask run
+
+
 ##########################################
 #           Routes                       #
 ##########################################
@@ -59,7 +67,95 @@ def new_boardgame():
             )
         db.session.add(create_new_boardgame)
         db.session.commit()
-        flash("You have created a new Boardgame")
+        flash("You have added a new Boardgame")
         return redirect(url_for("main.publisher_detail", publisher_id=create_new_boardgame.publisher_id))
 
     return render_template('new_boardgame.html', form=form)
+
+@main.route('/publisher/<publisher_id>', methods=['GET', 'POST'])
+def publisher_detail(publisher_id):
+    publisher = Publisher.query.get(publisher_id)
+
+    form = PublisherForm(obj=publisher)
+    
+    if form.validate_on_submit():
+        publisher.title = form.title.data
+        publisher.address = form.address.data
+        db.session.add(publisher)
+        db.session.commit()
+        flash("Publisher Updated.")
+        return redirect(url_for('main.publisher_detail', publisher_id=publisher.id))
+
+    return render_template('publisher_detail.html', publisher=publisher, form=form)
+
+@main.route('/boardgame/<boardgame_id>', methods=['GET', 'POST'])
+def boardgame_detail(boardgame_id):
+    boardgame = Boardgame.query.get(boardgame_id)
+
+    form = BoardgameForm(obj=boardgame)
+    if form.validate_on_submit():
+        boardgame.name = form.name.data
+        boardgame.category = form.category.data
+        boardgame.photo_url = form.photo_url.data
+        boardgame.publisher = form.publisher.data
+
+        db.session.add(boardgame)
+        db.session.commit()
+        flash("You have added this boardgame to the publisher list.")
+        return redirect(url_for('main.boardgame_detail', boardgame_id=boardgame.id))        
+
+    return render_template('boardgame_detail.html', boardgame=boardgame, form=form)
+
+@main.route('/add_to_user_boardgame/<boardgame_id>', methods=['POST'])
+@login_required
+def add_to_user_boardgame(boardgame_id):
+    boardgame = Boardgame.query.get(boardgame_id)
+    current_user.user_boardgame_users.append(boardgame)
+    db.session.add(current_user)
+    db.session.commit()
+    flash("Boardgame added to user list")
+    return redirect(url_for('main.user_boardgame', boardgame_id=boardgame.id)) 
+
+
+@main.route('/user_boardgame')
+@login_required
+def user_boardgame():
+    user_boardgame = current_user.user_boardgame_users
+    return render_template("user_boardgame.html", user_boardgame=user_boardgame)
+
+# AUTH
+@auth.route('/signup', methods=['GET', 'POST'])
+def signup():
+    print('in signup')
+    form = SignUpForm()
+    if form.validate_on_submit():
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        user = User(
+            username=form.username.data,
+            password=hashed_password
+        )
+        db.session.add(user)
+        db.session.commit()
+        flash('Account Created.')
+        print('created')
+        return redirect(url_for('auth.login'))
+    print(form.errors)
+    return render_template('signup.html', form=form)
+
+
+@auth.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data).first()
+        login_user(user, remember=True)
+        next_page = request.args.get('next')
+        return redirect(next_page if next_page else url_for('main.homepage'))
+    return render_template('login.html', form=form)
+
+@auth.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('main.homepage'))
+
