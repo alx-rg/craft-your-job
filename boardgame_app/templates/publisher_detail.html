@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Publisher - {{ publisher.company }}</h1>
+<em>Created by: {{ publisher.created_by.username }}</em>
+
+<strong>Description:</strong> {{ publisher.description }}
+
+<h2>Boardgames</h2>
+
+<div class="boardgames">
+    {% for boardgame in publisher.boardgames %}
+    <div class="boardgame-details">
+        <a href="/boardgame/{{ boardgame.id }}"><img src="{{ boardgame.photo_url }}" alt="{{ boardgame.name }}" width="200px">
+        <p><strong>{{ boardgame.name }}</strong></p></a>
+        <p><strong>Category {{ boardgame.category }}</strong></p>
+        <em>Created by: {{ boardgame.created_by.username }}</em>
+    </div>
+    {% endfor %}
+</div>
+
+
+<h2>Edit Publisher</h2>
+
+<form method="POST">
+    <fieldset>
+        <legend>Please enter publisher information:</legend>
+
+        {{ form.csrf_token }}
+        {{ form.company.label }}
+        <br>
+        {{ form.company(size=25) }}
+        <hr>
+        {{ form.description.label }}
+        <br>
+        {{ form.description(size=18) }}
+        <hr>
+        <input type="submit" value="Submit">
+    </fieldset>
+</form>
+
+{% endblock %}

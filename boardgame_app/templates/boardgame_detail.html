@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Boardgame - {{ boardgame.name }}</h1>
+<em>Created by: {{ boardgame.created_by.username }}</em>
+
+<p><img src="{{ boardgame.photo_url }}" width="250px" height="250px"></p>
+
+<p><strong>Category:</strong> {{ boardgame.category }}</p>
+
+<p><strong>Publisher:</strong> {{ boardgame.publisher.company }}</p>
+
+<hr> 
+
+<h2>Notes</h2>
+
+    {% for post in boardgame.posts %}
+    <div class="posts">
+    <a href="/user/{{post.poster.id}}">User: {{ post.poster.username }}</a>
+    <p>Note: {{ post.posts }}</p>
+    </div>
+    {% endfor %}
+
+<hr> 
+
+<form method="POST">
+    <fieldset>
+      <legend>Notes:</legend>
+      {{ post_form.csrf_token }}
+      {{ post_form.post.label }} {{ post_form.post }}
+      <input class='button' type="submit" value="Submit">
+    </fieldset>
+  </form>
+
+<h2>Edit Boardgame</h2>
+
+<form method="POST">
+    <fieldset>
+        <legend>Please enter the boardgame info!:</legend>
+
+        {{ form.csrf_token }}
+        {{ form.name.label }}
+        <br>
+        {{ form.name(size=25) }}
+        <hr>
+        {{ form.category.label }}
+        <br>
+        {{ form.category }}
+        <hr>
+        {{ form.photo_url.label }}
+        <br>
+        {{ form.photo_url(size=18) }}
+        <hr>
+        {{ form.publisher.label }}
+        <br>
+        {{ form.publisher }}
+        <hr>
+
+        <input type="submit" value="Submit">
+    </fieldset>
+</form>
+
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>New BoardGame Publisher</h1>
+
+<form method="POST">
+    <fieldset>
+        <legend>Please enter your Publisher info:</legend>
+
+        {{ form.csrf_token }}
+        {{ form.company.label }}
+        <br>
+        {{ form.company(size=25) }}
+        <hr>
+        {{ form.description.label }}
+        <br>
+        {{ form.description(size=18) }}
+        <hr>
+        {{ form.publisher_category.label }}
+        <br>
+        {{ form.publisher_category }}
+        <hr>
+        <input type="submit" value="Submit">
+    </fieldset>
+</form>
+
+
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+
+{% if current_user.is_authenticated %}
+    <h1>Welcome back {{ current_user.username }} to BoardgameUrh!</h1>
+
+    <h2>All Boardgames</h2>
+
+    {% for boardgame in boardgames %}
+    <div class="publisher">
+        <a href="/boardgame/{{ boardgame.id }}">{{ boardgame.name }}</a> - 
+        {{ boardgame.posts|length }} posts
+        <p><strong>Category:</strong> {{ boardgame.category }}</p>
+    </div>
+    {% endfor %}
+
+    <hr>
+    <h2>All Boardgame Publishers</h2>
+
+
+    {% for publisher in publishers %}
+    <div class="publisher">
+        <a href="/publisher/{{ publisher.id }}">{{ publisher.company }}</a> - 
+        {{ publisher.boardgames|length }} boardgames
+        <p><strong>Description:</strong> {{ publisher.description }}</p>
+    </div>
+    {% endfor %}
+    
+{% else %}
+
+    <img class='hero' src="{{ url_for('static', filename='logo.png')}}"></img>
+
+{% endif %}
+
+
+{% endblock %}

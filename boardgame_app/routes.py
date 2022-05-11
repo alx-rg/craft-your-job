@@ -7,8 +7,8 @@ from venv import create
 from flask import Blueprint, request, render_template, redirect, url_for, flash
 from datetime import date, datetime
 
-from boardgame_app.models import Publisher, Boardgame, User, UserMixin, user_boardgame
-from boardgame_app.forms import PublisherForm, BoardgameForm, SignUpForm, LoginForm
+from boardgame_app.models import Publisher, Boardgame, User, Post, UserMixin, user_boardgame
+from boardgame_app.forms import PublisherForm, BoardgameForm, SignUpForm, LoginForm, PostForm
 # Import app and db from events_app package so that we can run app
 from boardgame_app.extensions import app, db
 from flask_login import login_user, logout_user, current_user, login_required
@@ -24,15 +24,15 @@ auth = Blueprint("auth", __name__)
 # export FLASK_DEBUG=1
 # flask run
 
-
 ##########################################
 #           Routes                       #
 ##########################################
 
 @main.route('/')
 def homepage():
-    all_boardgames = Boardgame.query.all()
-    return render_template('home.html', all_boardgames=all_boardgames)
+    publishers = Publisher.query.all()
+    boardgames = Boardgame.query.all()
+    return render_template('home.html', publishers=publishers, boardgames=boardgames)
 
 @main.route('/new_publisher', methods=['GET', 'POST'])
 @login_required
@@ -79,8 +79,8 @@ def publisher_detail(publisher_id):
     form = PublisherForm(obj=publisher)
     
     if form.validate_on_submit():
-        publisher.title = form.title.data
-        publisher.address = form.address.data
+        publisher.company = form.company.data
+        publisher.description = form.description.data
         db.session.add(publisher)
         db.session.commit()
         flash("Publisher Updated.")
@@ -91,8 +91,20 @@ def publisher_detail(publisher_id):
 @main.route('/boardgame/<boardgame_id>', methods=['GET', 'POST'])
 def boardgame_detail(boardgame_id):
     boardgame = Boardgame.query.get(boardgame_id)
-
     form = BoardgameForm(obj=boardgame)
+    post_form = PostForm()
+
+    if post_form.validate_on_submit():
+      post = Post(
+        poster = current_user,
+        posts = post_form.post.data,
+        boardgame = boardgame
+      )
+      db.session.add(post)
+      db.session.commit()
+
+      return redirect(url_for('main.boardgame_detail', boardgame_id=boardgame_id))
+
     if form.validate_on_submit():
         boardgame.name = form.name.data
         boardgame.category = form.category.data
@@ -104,7 +116,8 @@ def boardgame_detail(boardgame_id):
         flash("You have added this boardgame to the publisher list.")
         return redirect(url_for('main.boardgame_detail', boardgame_id=boardgame.id))        
 
-    return render_template('boardgame_detail.html', boardgame=boardgame, form=form)
+    # return render_template('boardgame_detail.html', boardgame=boardgame, form=form)
+    return render_template('boardgame_detail.html', boardgame=boardgame, form=form, post_form=post_form)
 
 @main.route('/add_to_user_boardgame/<boardgame_id>', methods=['POST'])
 @login_required

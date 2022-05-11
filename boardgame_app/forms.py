@@ -2,7 +2,7 @@ from tokenize import String
 from unicodedata import name
 from flask_wtf import FlaskForm
 from sqlalchemy import Float
-from wtforms import StringField, DateField, SelectField, SubmitField, FloatField, PasswordField
+from wtforms import StringField, DateField, SelectField, SubmitField, FloatField, PasswordField, TextAreaField
 from wtforms_sqlalchemy.fields import QuerySelectField, QuerySelectMultipleField
 from boardgame_app.models import Publisher, Boardgame, ItemCategory, User, PublisherCategory
 from wtforms.validators import DataRequired, Length, URL, ValidationError
@@ -11,7 +11,7 @@ from boardgame_app import bcrypt
 class PublisherForm(FlaskForm):
     """Form for adding/updating a Publisher."""
     company = StringField('Publisher Name', validators=[DataRequired(), Length(min=2, max=100)])
-    description = StringField("Who and What is this BoardGame Published")
+    description = StringField("Who and What is this BoardGame Publisher about?")
     publisher_category = SelectField("Category", choices=PublisherCategory.choices())
     submit = SubmitField("Create New Publisher")
 
@@ -22,6 +22,10 @@ class BoardgameForm(FlaskForm):
     photo_url = StringField("Photo of Product URL")
     publisher = QuerySelectField("Publisher", query_factory=lambda: Publisher.query, allow_blank=False)
     submit = SubmitField("Create New Boardgame")
+
+class PostForm(FlaskForm):
+  """Form for notes and posts."""
+  post = StringField("Post", validators=[DataRequired()])
 
 
 # SIGN UP BELOW ++++++++++++++++++++++++++++++++++++++++
