@@ -25,7 +25,7 @@ class BoardgameForm(FlaskForm):
     submit = SubmitField("Create New Boardgame")
 
 
-# SIGN UP BELOW ++++++++++++++++++++++++++++++++++++++++++++++
+# SIGN UP BELOW ++++++++++++++++++++++++++++++++++++++++
 
 class SignUpForm(FlaskForm):
     username = StringField('User Name',
