@@ -20,7 +20,6 @@ class BoardgameForm(FlaskForm):
     name = StringField('Boardgame Name', validators=[DataRequired(), Length(min=2, max=100)])
     category = SelectField("Category", choices=ItemCategory.choices())
     photo_url = StringField("Photo of Product URL")
-    submit = SubmitField("Create New Boardgame")
     publisher = QuerySelectField("Publisher", query_factory=lambda: Publisher.query, allow_blank=False)
     submit = SubmitField("Create New Boardgame")
 
