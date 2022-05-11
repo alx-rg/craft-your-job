@@ -16,7 +16,7 @@
 
     {% for post in boardgame.posts %}
     <div class="posts">
-    <a href="/user/{{post.poster.id}}">User: {{ post.poster.username }}</a>
+    <p>User: {{ post.poster.username }}</p>
     <p>Note: {{ post.posts }}</p>
     </div>
     {% endfor %}
